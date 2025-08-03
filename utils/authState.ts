@@ -2,7 +2,7 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 
 export function useAuthState() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const authCheck = async () => {
