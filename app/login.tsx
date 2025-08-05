@@ -9,7 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   return (
-    <View className="flex flex-col items-center justify-center h-full w-full shadow-xl ">
+    <View className="flex flex-col items-center justify-center h-full w-full">
       <Text>Login</Text>
       <LinearGradient
         colors={["#3F72AF", "#FFFFFF"]} // indigo to white
@@ -35,7 +35,7 @@ export default function LoginPage() {
         <Text>Dont have an account?</Text>
         <Button
           title="Create Account"
-          onPress={() => router.navigate("/create-account")}
+          onPress={() => router.replace("/create-account")}
         ></Button>
       </LinearGradient>
     </View>
