@@ -1,17 +1,11 @@
-import { useAuthState } from "@/utils/authState";
-import { Stack } from "expo-router";
-import "../global.css";
-export default function RootLayout() {
-  const { isLoggedIn } = useAuthState();
+// app/_layout.tsx
+import { AuthProvider } from "@/utils/authState";
+import { Slot } from "expo-router";
 
-  if (isLoggedIn) {
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(app)" options={{ headerShown: false }} />
-    </Stack>;
-  }
+export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-    </Stack>
+    <AuthProvider>
+      <Slot />
+    </AuthProvider>
   );
 }
