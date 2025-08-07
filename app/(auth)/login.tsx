@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 
@@ -33,10 +33,9 @@ export default function LoginPage() {
           <TextInput placeholder="Password" onChangeText={setPassword} />
         </View>
         <Text>Dont have an account?</Text>
-        <Button
-          title="Create Account"
-          onPress={() => router.replace("/create-account")}
-        ></Button>
+        <Link href="/create-account" push asChild>
+          <Button title="Create Account" />
+        </Link>
       </LinearGradient>
     </View>
   );
