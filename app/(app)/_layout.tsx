@@ -1,17 +1,16 @@
 import { useAuthState } from "@/utils/authState";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
+import { Text } from "react-native";
 import "../../global.css";
 export default function AppLayout() {
-  const { isLoggedIn } = useAuthState();
+  const { isLoggedIn, isLoading } = useAuthState();
 
-  if (isLoggedIn) {
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(app)" options={{ headerShown: false }} />
-    </Stack>;
+  if (isLoading) {
+    return <Text>Loading .....</Text>;
   }
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-    </Stack>
-  );
+
+  if (!isLoggedIn) {
+    return <Redirect href="/(auth)/login" />;
+  }
+  return <Stack></Stack>;
 }

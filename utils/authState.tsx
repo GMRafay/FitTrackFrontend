@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useState } from "react";
 interface AuthContextType {
@@ -7,7 +8,7 @@ interface AuthContextType {
   login: (token: string, userData: User) => Promise<void>;
   logout: () => Promise<void>;
 }
-
+const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
 interface User {
   id: string;
   email: string;
@@ -34,15 +35,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuthState();
   }, []);
 
+  const fetchMe = async (access_token: string) => {
+    const { data } = await axios.get<User>(baseUrl + "users/me", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    setUser(data);
+  };
+
   const checkAuthState = async () => {
     try {
       const access_token = await SecureStore.getItemAsync("access_token");
-      const userData = await SecureStore.getItemAsync("userData");
-      if (access_token && userData) {
-        const user = JSON.parse(userData);
-        setUser(user);
-
+      if (access_token) {
         setIsLoggedIn(true);
+        await fetchMe(access_token);
       }
     } catch (err) {
       console.error(err);
@@ -51,13 +56,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (token: string, userData: User) => {
+  const login = async (access_token: string, userData: User) => {
     try {
-      await SecureStore.setItemAsync("access_token", token);
-      await SecureStore.setItemAsync("userData", JSON.stringify(userData));
+      await SecureStore.setItemAsync("access_token", access_token);
 
-      setUser(userData);
       setIsLoggedIn(true);
+      await fetchMe(access_token);
     } catch (error) {
       console.error(error);
       throw error;
@@ -67,7 +71,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await SecureStore.deleteItemAsync("access_token");
-      await SecureStore.deleteItemAsync("userData");
 
       setUser(null);
       setIsLoggedIn(false);

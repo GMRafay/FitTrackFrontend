@@ -1,10 +1,9 @@
+import { useAuthState } from "@/utils/authState";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
-
 export default function CreateAccountPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -13,18 +12,21 @@ export default function CreateAccountPage() {
   const [data, setData] = useState("");
   const router = useRouter();
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
-
+  const { login } = useAuthState();
   const attemptAccountCreation = async () => {
     try {
       const response = await axios.post(baseUrl + "auth/signup", {
         email: email,
         password: password,
       });
-      const result = response.data;
+      const access_token = response.data.access_token;
+      const result = JSON.stringify(response.data);
       setData(result);
       console.log(result);
-      await SecureStore.setItemAsync("access_token", result);
-      router.reload();
+
+      await login(access_token, response.data);
+
+      router.replace("/");
     } catch (err) {
       console.log(err);
     }
