@@ -1,5 +1,5 @@
 import { useAuthState } from "@/utils/authState";
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, FlatList, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +14,7 @@ export default function HomePage() {
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
   const [workoutDayTitle, SetWorkoutDayTitle] = useState<string>();
   const [jwtToken, setJwtToken] = useState<string | null>();
+
   useEffect(() => {
     if (!user) {
       logout();
@@ -24,8 +25,8 @@ export default function HomePage() {
     try {
       const access_token = await SecureStore.getItemAsync("access_token");
       setJwtToken(access_token);
-      const response = await axios.get(baseUrl + "/workoutday", {
-        headers: { Authorization: `bearer ${access_token}` },
+      const response = await axios.get(baseUrl + "workoutday", {
+        headers: { Authorization: `Bearer ${access_token}` },
       });
       const data = response.data;
       if (!data) {
@@ -47,30 +48,52 @@ export default function HomePage() {
   }
   const createWorkoutday = async () => {
     try {
-      await axios.post(baseUrl + "/workoutday", {
-        headers: { Authorization: `bearer ${jwtToken}` },
-      });
+      await axios.post(
+        baseUrl + "workoutday",
+        { title: workoutDayTitle },
+        {
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        },
+      );
       fetchWorkoutDays();
     } catch (error) {
       console.log(error);
+      console.log(jwtToken);
+      console.log(workoutDayTitle);
     }
   };
+  const renderItem = ({ item }) => (
+    <View>
+      <Text>{item.title}</Text>
+    </View>
+  );
   return (
     <View className="flex flex-col w-full h-full justify-center items-center">
+      {" "}
       <Text>
-        {stringer} You have reached the home page welcome {user?.email}
-      </Text>
-      {workoutDays?.length ? (
-        <Text> you have workoutdays </Text>
-      ) : (
-        <Button title="CreateWorkoutDay " onPress={toggleCreate} />
+        {" "}
+        {stringer} You have reached the home page welcome {user?.email}{" "}
+      </Text>{" "}
+      {workoutDays?.length && (
+        <View>
+          <Text> you have workoutdays </Text>
+          <Button title="CreateWorkoutDay " onPress={toggleCreate} />
+        </View>
       )}
       {showCreate && (
         <View>
-          <TextInput placeholder="enter workoutday title" />
+          <TextInput
+            placeholder="enter workoutday title"
+            onChangeText={SetWorkoutDayTitle}
+          />
           <Button title="create" onPress={createWorkoutday} />
         </View>
       )}
+      <FlatList
+        data={workoutDays}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
