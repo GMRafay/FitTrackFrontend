@@ -62,24 +62,22 @@ export default function HomePage() {
       console.log(workoutDayTitle);
     }
   };
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <View>
-      <Text>{item.title}</Text>
+      <Text>{item?.title}</Text>
     </View>
   );
   return (
     <View className="flex flex-col w-full h-full justify-center items-center">
-      {" "}
       <Text>
-        {" "}
-        {stringer} You have reached the home page welcome {user?.email}{" "}
-      </Text>{" "}
-      {workoutDays?.length && (
+        {stringer} You have reached the home page welcome {user?.email}
+      </Text>
+      {workoutDays?.length ? (
         <View>
           <Text> you have workoutdays </Text>
           <Button title="CreateWorkoutDay " onPress={toggleCreate} />
         </View>
-      )}
+      ) : null}
       {showCreate && (
         <View>
           <TextInput
@@ -93,6 +91,8 @@ export default function HomePage() {
         data={workoutDays}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        className="grow-0 bg-red-400"
+        contentContainerClassName="bg-red-400 grow-0 height-50 items-center justify-center"
       />
     </View>
   );
