@@ -1,5 +1,12 @@
 import { useAuthState } from "@/utils/authState";
-import { Button, FlatList, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
@@ -63,21 +70,32 @@ export default function HomePage() {
     }
   };
   const renderItem = ({ item }: { item: any }) => (
-    <View>
+    <View className="border rounded-xl border-black p-5 m-5 w-[80%]">
       <Text>{item?.title}</Text>
     </View>
   );
   return (
-    <View className="flex flex-col w-full h-full justify-center items-center">
-      <Text>
-        {stringer} You have reached the home page welcome {user?.email}
+    <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
+      <Text className="text-center text-white text-5xl">
+        Welcome Back, {user?.email}
       </Text>
       {workoutDays?.length ? (
-        <View>
-          <Text> you have workoutdays </Text>
-          <Button title="CreateWorkoutDay " onPress={toggleCreate} />
+        <View className="border rounded-3xl w-[80%] p-5 flex flex-row justify-around items-center bg-[#3E5C76]">
+          <View className="flex flex-col gap-5 mr-[20px]">
+            <Text className="text-[#DBE2EF]"> # of workoutdays </Text>
+            <Text className="text-white">{workoutDays.length}</Text>
+          </View>
+          <View className="flex flex-col gap-5 ml-[20px]">
+            <Text className="text-[#DBE2EF]">Last workout</Text>
+            <Text>{workoutDays.at(0)?.title}</Text>
+          </View>
         </View>
       ) : null}
+      <TouchableOpacity className="w-[80%] p-5 bg-[#748CAB] border rounded-3xl">
+        <Text className=" text-center text-white text-xl">
+          {!showCreate ? "🦾 Add a workout day" : "Hide"}
+        </Text>
+      </TouchableOpacity>
       {showCreate && (
         <View>
           <TextInput
@@ -91,8 +109,8 @@ export default function HomePage() {
         data={workoutDays}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        className="grow-0 bg-red-400"
-        contentContainerClassName="bg-red-400 grow-0 height-50 items-center justify-center"
+        className="grow-0 w-full h-[30%]"
+        contentContainerClassName="grow-0 items-center justify-center"
       />
     </View>
   );
