@@ -65,7 +65,6 @@ export default function HomePage() {
         },
       );
       fetchWorkoutDays();
-      toggleCreate();
     } catch (error) {
       console.log(error);
       console.log(jwtToken);
@@ -120,7 +119,7 @@ export default function HomePage() {
         animationType="slide"
         onRequestClose={() => setShowCreate(false)}
       >
-        <View className="flex-1 justify-center items-center  bg-[#1D2D44]">
+        <View className="flex-1 justify-center items-center  bg-transparent">
           <View className="bg-[#F0EBD8] w-[80%] h-[30%] shadow-xl border border-black rounded-xl m-8 items-center justify-evenly">
             <Text className="text-3xl font-semibold ">Create workout day</Text>
             <TextInput
@@ -128,23 +127,9 @@ export default function HomePage() {
               className="border rounded-xl  w-[80%]"
               onChangeText={SetWorkoutDayTitle}
             />
-            <View className="flex flex-row justify-center gap-10 w-full">
-              <TouchableOpacity
-                className="border rounded-xl p-3  w-[35%]"
-                onPress={() => setShowCreate(false)}
-              >
-                <Text className="text-center text-lg font-semibold">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="border p-3 rounded-xl  w-[35%] bg-[#748CAB]"
-                onPress={createWorkoutday}
-              >
-                <Text className="text-center font-semibold text-lg">
-                  Create
-                </Text>
-              </TouchableOpacity>
+            <View className="flex-row justify-end gap-3">
+              <Button title="Cancel" onPress={() => setShowCreate(false)} />
+              <Button title="Create" onPress={createWorkoutday} />
             </View>
           </View>
         </View>
