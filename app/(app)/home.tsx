@@ -19,7 +19,7 @@ export default function HomePage() {
   const stringer = JSON.stringify(user);
   const router = useRouter();
   const [workoutDays, setWorkoutDays] = useState<any[] | null>([]);
-  const [showCreate, setShowCreate] = useState<boolean>();
+  const [showCreate, setShowCreate] = useState<boolean>(false);
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
   const [workoutDayTitle, SetWorkoutDayTitle] = useState<string>();
   const [jwtToken, setJwtToken] = useState<string | null>();
@@ -55,6 +55,12 @@ export default function HomePage() {
   function toggleCreate() {
     setShowCreate(!showCreate);
   }
+  function handleWorkoutDayPress(workoutDayId: number) {
+    router.push({
+      pathname: "/workoutday/[id]",
+      params: { id: workoutDayId },
+    });
+  }
   const createWorkoutday = async () => {
     try {
       await axios.post(
@@ -73,14 +79,16 @@ export default function HomePage() {
     }
   };
   const renderItem = ({ item }: { item: any }) => (
-    <View className="w-full">
-      <View className="border rounded-3xl border-black p-5 bg-white">
-        <Text className="text-lg">{item.title}</Text>
-        <Text className="text-gray-500 text-sm pt-1">
-          {new Date(item.createdAt).toLocaleDateString()}
-        </Text>
+    <TouchableOpacity onPress={() => handleWorkoutDayPress(item.id)}>
+      <View className="w-full">
+        <View className="border rounded-3xl border-black p-5 bg-white">
+          <Text className="text-lg">{item.title}</Text>
+          <Text className="text-gray-500 text-sm pt-1">
+            {new Date(item.createdAt).toLocaleDateString()}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
