@@ -35,8 +35,10 @@ export default function WorkoutDayScreen() {
   }, [id]);
 
   return (
-    <View>
-      <Text>welcome to the workoutday screen {workoutDayInfo?.id}</Text>
+    <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
+      <Text className="text-3xl text-white font-bold">
+        {workoutDayInfo?.title}
+      </Text>
     </View>
   );
 }
