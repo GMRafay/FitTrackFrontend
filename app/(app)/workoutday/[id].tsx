@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { View, Text } from "react-native";
 export default function WorkoutDayScreen() {
   const { id } = useLocalSearchParams();
-
+  const [exercise, setExercises] = useState<any[] | null>();
   type WorkoutDay = {
     id: number;
     title: string;
@@ -34,11 +34,39 @@ export default function WorkoutDayScreen() {
     fetchInfo();
   }, [id]);
 
+  const fetchExercises = useCallback(async () => {
+    try {
+      const token = await SecureStore.getItemAsync("access_token");
+      if (!token) throw new Error("you have no access_token");
+      const response = await axios.get(baseUrl + `workoutday/${id}/exercise`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = response.data;
+      setExercises(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchExercises();
+  }, [fetchExercises]);
+
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
       <Text className="text-3xl text-white font-bold">
         {workoutDayInfo?.title}
       </Text>
+      <View className="flex flex-row justify-between">
+        <View className="flex flex-col">
+          <Text># of exercises</Text>
+          <Text>{exercise?.length}</Text>
+        </View>
+        <View className=" flex flex-col items-start justify-center">
+          <Text>last exercise</Text>
+          <Text>placeholder exercise</Text>
+        </View>
+      </View>
     </View>
   );
 }
