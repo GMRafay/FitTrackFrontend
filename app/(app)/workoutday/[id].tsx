@@ -57,12 +57,13 @@ export default function WorkoutDayScreen() {
       <Text className="text-3xl text-white font-bold">
         {workoutDayInfo?.title}
       </Text>
-      <View className="flex flex-row justify-between">
-        <View className="flex flex-col">
+      <View className="border rounded-3xl w-[80%] p-5 flex flex-row justify-around items-center bg-[#3E5C76]">
+        <View className="flex flex-col gap-5 mr-[20px] border-r-black">
           <Text># of exercises</Text>
           <Text>{exercise?.length}</Text>
         </View>
-        <View className=" flex flex-col items-start justify-center">
+        <View className=" w-px h-12 bg-white/30"></View>
+        <View className="flex flex-col gap-5 ml-[20px]">
           <Text>last exercise</Text>
           <Text>placeholder exercise</Text>
         </View>
