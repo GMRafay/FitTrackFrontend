@@ -2,10 +2,12 @@ import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 export default function WorkoutDayScreen() {
   const { id } = useLocalSearchParams();
   const [exercise, setExercises] = useState<any[] | null>();
+  const [showAddExercise, setShowAddExercise] = useState<boolean>(false);
+  const [exerciseName, setExerciseName] = useState<string>("");
   type WorkoutDay = {
     id: number;
     title: string;
@@ -52,6 +54,20 @@ export default function WorkoutDayScreen() {
     fetchExercises();
   }, [fetchExercises]);
 
+  const attemptAddExercise = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("access_token");
+      await axios.post(
+        baseUrl + "workoutday/${id}/exercise",
+        { title: exerciseName },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      fetchExercises();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
       <Text className="text-3xl text-white font-bold">
@@ -59,15 +75,20 @@ export default function WorkoutDayScreen() {
       </Text>
       <View className="border rounded-3xl w-[80%] p-5 flex flex-row justify-around items-center bg-[#3E5C76]">
         <View className="flex flex-col gap-5 mr-[20px] border-r-black">
-          <Text># of exercises</Text>
-          <Text>{exercise?.length}</Text>
+          <Text className="text-white text-xl"># of exercises</Text>
+          <Text className="text-white text-md">{exercise?.length}</Text>
         </View>
         <View className=" w-px h-12 bg-white/30"></View>
         <View className="flex flex-col gap-5 ml-[20px]">
-          <Text>last exercise</Text>
-          <Text>placeholder exercise</Text>
+          <Text className="text-white text-lg">last exercise</Text>
+          <Text className="text-white text-md">placeholder exercise</Text>
         </View>
       </View>
+      <TouchableOpacity className="w-[80%]   bg-[#748CAB] border rounded-3xl p-5">
+        <View>
+          <Text className="text-white text-center text-xl">Add Exercise</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
