@@ -2,7 +2,7 @@ import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Modal, Pressable } from "react-native";
 export default function WorkoutDayScreen() {
   const { id } = useLocalSearchParams();
   const [exercise, setExercises] = useState<any[] | null>();
@@ -67,7 +67,9 @@ export default function WorkoutDayScreen() {
       console.log(err);
     }
   };
-
+  function toggleAddExercise() {
+    setShowAddExercise(!showAddExercise);
+  }
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
       <Text className="text-3xl text-white font-bold">
@@ -84,11 +86,25 @@ export default function WorkoutDayScreen() {
           <Text className="text-white text-md">placeholder exercise</Text>
         </View>
       </View>
-      <TouchableOpacity className="w-[80%]   bg-[#748CAB] border rounded-3xl p-5">
+      <TouchableOpacity
+        className="w-[80%]   bg-[#748CAB] border rounded-3xl p-5"
+        onPress={() => toggleAddExercise()}
+      >
         <View>
           <Text className="text-white text-center text-xl">Add Exercise</Text>
         </View>
       </TouchableOpacity>
+      <Modal
+        onRequestClose={() => toggleAddExercise()}
+        visible={showAddExercise}
+        animationType="slide"
+      >
+        <View className="bg-[#1D2D44] flex-1 flex-col justify-center items-center">
+          <View className="w-[80%] h-[30%] bg-white border rounded-3xl flex flex-col items-center justify-center ">
+            <Text>Enter Exercise Name</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
