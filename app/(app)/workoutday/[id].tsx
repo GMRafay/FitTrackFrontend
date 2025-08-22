@@ -2,12 +2,20 @@ import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { View, Text, TouchableOpacity, Modal, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+} from "react-native";
 export default function WorkoutDayScreen() {
   const { id } = useLocalSearchParams();
   const [exercise, setExercises] = useState<any[] | null>();
   const [showAddExercise, setShowAddExercise] = useState<boolean>(false);
   const [exerciseName, setExerciseName] = useState<string>("");
+  const [exerciseTitle, setExerciseTitle] = useState<string>();
   type WorkoutDay = {
     id: number;
     title: string;
@@ -100,9 +108,10 @@ export default function WorkoutDayScreen() {
         animationType="slide"
       >
         <View className="bg-[#1D2D44] flex-1 flex-col justify-center items-center">
-          <View className="w-[80%] h-[30%] bg-white border rounded-3xl flex flex-col items-center justify-center ">
-            <Text>Enter Exercise Name</Text>
-          </View>
+          <TextInput
+            placeholder="Enter exercise title"
+            onChangeText={setExerciseTitle}
+          ></TextInput>
         </View>
       </Modal>
     </View>

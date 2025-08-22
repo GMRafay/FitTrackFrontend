@@ -23,6 +23,7 @@ export default function HomePage() {
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
   const [workoutDayTitle, SetWorkoutDayTitle] = useState<string>();
   const [jwtToken, setJwtToken] = useState<string | null>();
+  const [exerciseTitle, setExerciseTitle] = useState<string>();
 
   useEffect(() => {
     if (!user) {
