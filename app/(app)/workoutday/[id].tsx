@@ -1,10 +1,12 @@
 import axios from "axios";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import {
   View,
   Text,
+  FlatList,
+  Button,
   TextInput,
   TouchableOpacity,
   Modal,
@@ -12,10 +14,9 @@ import {
 } from "react-native";
 export default function WorkoutDayScreen() {
   const { id } = useLocalSearchParams();
-  const [exercise, setExercises] = useState<any[] | null>();
+  const [exercises, setExercises] = useState<any[] | null>();
   const [showAddExercise, setShowAddExercise] = useState<boolean>(false);
   const [exerciseName, setExerciseName] = useState<string>("");
-  const [exerciseTitle, setExerciseTitle] = useState<string>();
   type WorkoutDay = {
     id: number;
     title: string;
@@ -24,6 +25,7 @@ export default function WorkoutDayScreen() {
   };
   const [workoutDayInfo, setWorkoutDayInfo] = useState<WorkoutDay | null>();
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
+  const router = useRouter();
   useEffect(() => {
     if (!id) return;
 
@@ -66,11 +68,12 @@ export default function WorkoutDayScreen() {
     try {
       const token = await SecureStore.getItemAsync("access_token");
       await axios.post(
-        baseUrl + "workoutday/${id}/exercise",
+        baseUrl + `workoutday/${id}/exercise`,
         { title: exerciseName },
         { headers: { Authorization: `Bearer ${token}` } },
       );
       fetchExercises();
+      toggleAddExercise();
     } catch (err) {
       console.log(err);
     }
@@ -78,6 +81,21 @@ export default function WorkoutDayScreen() {
   function toggleAddExercise() {
     setShowAddExercise(!showAddExercise);
   }
+  function handleExercisePress(itemId: number) {
+    console.log(itemId);
+  }
+  const renderItem = ({ item }: { item: any }) => (
+    <TouchableOpacity onPress={() => handleExercisePress(item.id)}>
+      <View className="w-full">
+        <View className="border rounded-3xl border-black p-5 bg-white">
+          <Text className="text-lg">{item.title}</Text>
+          <Text className="text-gray-500 text-sm pt-1">
+            {new Date(item.createdAt).toLocaleDateString()}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
       <Text className="text-3xl text-white font-bold">
@@ -86,7 +104,7 @@ export default function WorkoutDayScreen() {
       <View className="border rounded-3xl w-[80%] p-5 flex flex-row justify-around items-center bg-[#3E5C76]">
         <View className="flex flex-col gap-5 mr-[20px] border-r-black">
           <Text className="text-white text-xl"># of exercises</Text>
-          <Text className="text-white text-md">{exercise?.length}</Text>
+          <Text className="text-white text-md">{exercises?.length}</Text>
         </View>
         <View className=" w-px h-12 bg-white/30"></View>
         <View className="flex flex-col gap-5 ml-[20px]">
@@ -108,12 +126,41 @@ export default function WorkoutDayScreen() {
         animationType="slide"
       >
         <View className="bg-[#1D2D44] flex-1 flex-col justify-center items-center">
-          <TextInput
-            placeholder="Enter exercise title"
-            onChangeText={setExerciseTitle}
-          ></TextInput>
+          <View className="w-[80%] h-[30%] bg-[#F0EBD8] border rounded-3xl flex flex-col justify-evenly items-center">
+            <Text className="text-3xl font-semibold ">Add an Exercise</Text>
+            <TextInput
+              className="border rounded-xl w-[80%] "
+              placeholder="Enter exercise title"
+              onChangeText={setExerciseName}
+            ></TextInput>
+            <View className="flex flex-row justify-center items-center gap-10 w-full">
+              <TouchableOpacity
+                className="bg-[#0D1321] w-[35%] rounded-xl border p-3 border-black"
+                onPress={() => toggleAddExercise()}
+              >
+                <Text className="text-[#F0EBD8] text-lg text-center ">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-[#748CAB] w-[35%] rounded-xl p-3 border border-black"
+                onPress={() => attemptAddExercise()}
+              >
+                <Text className="text-[#F0EBD8] text-lg text-center ">
+                  Create
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
+      <FlatList
+        data={exercises}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        className="grow-0 w-[80%] h-[40%] "
+        contentContainerClassName="gap-3 "
+      />
     </View>
   );
 }
