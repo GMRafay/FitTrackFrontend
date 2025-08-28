@@ -17,6 +17,7 @@ export default function WorkoutDayScreen() {
   const [exercises, setExercises] = useState<any[] | null>();
   const [showAddExercise, setShowAddExercise] = useState<boolean>(false);
   const [exerciseName, setExerciseName] = useState<string>("");
+  const [selectedItemId, setSelectedItemId] = useState<number>();
   type WorkoutDay = {
     id: number;
     title: string;
@@ -83,19 +84,39 @@ export default function WorkoutDayScreen() {
   }
   function handleExercisePress(itemId: number) {
     console.log(itemId);
+    setSelectedItemId(itemId);
   }
-  const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => handleExercisePress(item.id)}>
-      <View className="w-full">
-        <View className="border rounded-3xl border-black p-5 bg-white">
-          <Text className="text-lg">{item.title}</Text>
-          <Text className="text-gray-500 text-sm pt-1">
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }: { item: any }) => {
+    if (item.id !== selectedItemId) {
+      return (
+        <TouchableOpacity onPress={() => handleExercisePress(item.id)}>
+          <View className="w-full">
+            <View className="border rounded-3xl border-black p-5 bg-white">
+              <Text className="text-lg">{item.title}</Text>
+              <Text className="text-gray-500 text-sm pt-1">
+                {new Date(item.createdAt).toLocaleDateString()}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={() => handleExercisePress(item.id)}>
+          <View className="w-full">
+            <View className="border rounded-3xl border-black p-5 bg-white">
+              <Text className="text-lg">{item.title}</Text>
+              <Text className="text-gray-500 text-sm pt-1">
+                {new Date(item.createdAt).toLocaleDateString()}
+              </Text>
+            </View>
+            <Text>Insert your sets below</Text>
+            {console.log(selectedItemId)}
+          </View>
+        </TouchableOpacity>
+      );
+    }
+  };
   return (
     <View className="flex flex-col w-full h-full justify-center items-center gap-5 bg-[#1D2D44] ">
       <Text className="text-3xl text-white font-bold">
