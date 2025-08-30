@@ -27,6 +27,9 @@ export default function WorkoutDayScreen() {
   const [workoutDayInfo, setWorkoutDayInfo] = useState<WorkoutDay | null>();
   const baseUrl = "https://fittrackbackend-production-a141.up.railway.app/";
   const router = useRouter();
+  const [currentWeight, setCurrentWeight] = useState<number>();
+  const [currentSet, setCurrentSet] = useState<number>();
+  const [currentReps, setCurrentReps] = useState<number>();
   useEffect(() => {
     if (!id) return;
 
@@ -109,9 +112,28 @@ export default function WorkoutDayScreen() {
               <Text className="text-gray-500 text-sm pt-1">
                 {new Date(item.createdAt).toLocaleDateString()}
               </Text>
+              <Text>Insert your sets below</Text>
+              <View className="flex flex-row w-full mt-5">
+                <Text className="p-3 pl-0">Weight :</Text>
+                <TextInput
+                  onChangeText={(text) => setCurrentWeight(Number(text))}
+                  placeholder="lbs"
+                  className="border border-black text-gray-500"
+                />
+                <Text className="p-3">Set #:</Text>
+                <TextInput
+                  onChangeText={(text) => setCurrentSet(Number(text))}
+                  placeholder="ex 1"
+                  className="border border-black text-gray-500"
+                />
+                <Text className="p-3"># of reps:</Text>
+                <TextInput
+                  onChangeText={(text) => setCurrentReps(Number(text))}
+                  placeholder="ex 8"
+                  className="border border-black text-gray-500"
+                />
+              </View>
             </View>
-            <Text>Insert your sets below</Text>
-            {console.log(selectedItemId)}
           </View>
         </TouchableOpacity>
       );
