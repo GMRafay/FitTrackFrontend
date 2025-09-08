@@ -124,7 +124,7 @@ export default function WorkoutDayScreen() {
                 <TextInput
                   onChangeText={(text) => setCurrentSet(Number(text))}
                   placeholder="ex 1"
-                  className="border border-black text-gray-500"
+                  className="border border-black text-gray-300"
                 />
                 <Text className="p-3"># of reps:</Text>
                 <TextInput
@@ -133,6 +133,7 @@ export default function WorkoutDayScreen() {
                   className="border border-black text-gray-500"
                 />
               </View>
+              <TouchableOpacity></TouchableOpacity>
             </View>
           </View>
         </TouchableOpacity>
